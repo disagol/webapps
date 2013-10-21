@@ -1,0 +1,35 @@
+curl -i -H "Accept: application/json" -X DELETE http://localhost:8000/wStationMgr/api/8/ --- delete node 8
+
+curl.exe  -H "Accept: application/json" -X PUT -d "title=Titulo Modificado" http://localhost:8000/wStationMgr/api/8/ > log.txt  -- update
+
+curl.exe  -H "Accept: application/json" http://localhost:8000/wStationMgr/api/8/ > log.txt  -- get
+
+curl.exe  -H "Accept: application/json" -X PUT -d "title=Titulo Modificado XXX" -u tester:tester http://localhost:8000/wStationMgr/api/8/ > log.txt -- con login
+
+/// Data
+
+curl.exe  -H "Accept: application/json" http://localhost:8000/wStationMgr/api/data/5/ :: get data node 5
+curl.exe  -H "Accept:application/xml" http://localhost:8000/wStationMgr/api/data/5/ :: get data xml format
+
+
+curl.exe  -H "Accept: application/json" http://localhost:8000/wStationMgr/api/data/ :: get all datas
+
+curl.exe  -H "Accept: application/json" http://localhost:8000/wStationMgr/api/data/?name=DN111 :: get data filter by name
+
+curl.exe -H "Accept: application/json" http://localhost:8000/wStationMgr/api/data/?fconstraint=FC3 :: get data data has one attribute data with fc = fc
+
+c:\curl\curl.exe  -H "Accept: application/json" "http://localhost:8000/wStationMgr/api/?name=NASA&includeNode=false" :: get node by name and his inmmediate nodes not including the node
+
+
+// change db schema
+C:\django_apps\serverSite>manage.py schemamigration wStationMgr --initial
+
+C:\django_apps\serverSite>manage.py migrate wStationMgr --fake 0003
+
+C:\django_apps\serverSite>manage.py schemamigration wStationMgr --auto
+
+C:\django_apps\serverSite>manage.py schemamigration wStationMgr --auto
+
+// Start server
+C:\django_apps\serverSite>python manage.py collectstatic
+C:\django_apps\serverSite>python manage.py runwsgiserver staticserve=collectstatic

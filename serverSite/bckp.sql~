@@ -1,0 +1,312 @@
+PRAGMA foreign_keys=OFF;
+BEGIN TRANSACTION;
+CREATE TABLE "auth_permission" (
+    "id" integer NOT NULL PRIMARY KEY,
+    "name" varchar(50) NOT NULL,
+    "content_type_id" integer NOT NULL,
+    "codename" varchar(100) NOT NULL,
+    UNIQUE ("content_type_id", "codename")
+);
+INSERT INTO "auth_permission" VALUES(1,'Can add permission',1,'add_permission');
+INSERT INTO "auth_permission" VALUES(2,'Can change permission',1,'change_permission');
+INSERT INTO "auth_permission" VALUES(3,'Can delete permission',1,'delete_permission');
+INSERT INTO "auth_permission" VALUES(4,'Can add group',2,'add_group');
+INSERT INTO "auth_permission" VALUES(5,'Can change group',2,'change_group');
+INSERT INTO "auth_permission" VALUES(6,'Can delete group',2,'delete_group');
+INSERT INTO "auth_permission" VALUES(7,'Can add user',3,'add_user');
+INSERT INTO "auth_permission" VALUES(8,'Can change user',3,'change_user');
+INSERT INTO "auth_permission" VALUES(9,'Can delete user',3,'delete_user');
+INSERT INTO "auth_permission" VALUES(10,'Can add content type',4,'add_contenttype');
+INSERT INTO "auth_permission" VALUES(11,'Can change content type',4,'change_contenttype');
+INSERT INTO "auth_permission" VALUES(12,'Can delete content type',4,'delete_contenttype');
+INSERT INTO "auth_permission" VALUES(13,'Can add session',5,'add_session');
+INSERT INTO "auth_permission" VALUES(14,'Can change session',5,'change_session');
+INSERT INTO "auth_permission" VALUES(15,'Can delete session',5,'delete_session');
+INSERT INTO "auth_permission" VALUES(16,'Can add site',6,'add_site');
+INSERT INTO "auth_permission" VALUES(17,'Can change site',6,'change_site');
+INSERT INTO "auth_permission" VALUES(18,'Can delete site',6,'delete_site');
+INSERT INTO "auth_permission" VALUES(19,'Can add log entry',7,'add_logentry');
+INSERT INTO "auth_permission" VALUES(20,'Can change log entry',7,'change_logentry');
+INSERT INTO "auth_permission" VALUES(21,'Can delete log entry',7,'delete_logentry');
+INSERT INTO "auth_permission" VALUES(22,'Can add server',8,'add_server');
+INSERT INTO "auth_permission" VALUES(23,'Can change server',8,'change_server');
+INSERT INTO "auth_permission" VALUES(24,'Can delete server',8,'delete_server');
+INSERT INTO "auth_permission" VALUES(25,'Can add logical device',9,'add_logicaldevice');
+INSERT INTO "auth_permission" VALUES(26,'Can change logical device',9,'change_logicaldevice');
+INSERT INTO "auth_permission" VALUES(27,'Can delete logical device',9,'delete_logicaldevice');
+INSERT INTO "auth_permission" VALUES(28,'Can add logical node',10,'add_logicalnode');
+INSERT INTO "auth_permission" VALUES(29,'Can change logical node',10,'change_logicalnode');
+INSERT INTO "auth_permission" VALUES(30,'Can delete logical node',10,'delete_logicalnode');
+INSERT INTO "auth_permission" VALUES(31,'Can add data',11,'add_data');
+INSERT INTO "auth_permission" VALUES(32,'Can change data',11,'change_data');
+INSERT INTO "auth_permission" VALUES(33,'Can delete data',11,'delete_data');
+INSERT INTO "auth_permission" VALUES(34,'Can add composite data',12,'add_compositedata');
+INSERT INTO "auth_permission" VALUES(35,'Can change composite data',12,'change_compositedata');
+INSERT INTO "auth_permission" VALUES(36,'Can delete composite data',12,'delete_compositedata');
+INSERT INTO "auth_permission" VALUES(37,'Can add basic type',13,'add_basictype');
+INSERT INTO "auth_permission" VALUES(38,'Can change basic type',13,'change_basictype');
+INSERT INTO "auth_permission" VALUES(39,'Can delete basic type',13,'delete_basictype');
+INSERT INTO "auth_permission" VALUES(40,'Can add functional constraint',14,'add_functionalconstraint');
+INSERT INTO "auth_permission" VALUES(41,'Can change functional constraint',14,'change_functionalconstraint');
+INSERT INTO "auth_permission" VALUES(42,'Can delete functional constraint',14,'delete_functionalconstraint');
+INSERT INTO "auth_permission" VALUES(43,'Can add attribute type data',15,'add_attributetypedata');
+INSERT INTO "auth_permission" VALUES(44,'Can change attribute type data',15,'change_attributetypedata');
+INSERT INTO "auth_permission" VALUES(45,'Can delete attribute type data',15,'delete_attributetypedata');
+INSERT INTO "auth_permission" VALUES(46,'Can add attribute data',16,'add_attributedata');
+INSERT INTO "auth_permission" VALUES(47,'Can change attribute data',16,'change_attributedata');
+INSERT INTO "auth_permission" VALUES(48,'Can delete attribute data',16,'delete_attributedata');
+INSERT INTO "auth_permission" VALUES(49,'Can add composite component',17,'add_compositecomponent');
+INSERT INTO "auth_permission" VALUES(50,'Can change composite component',17,'change_compositecomponent');
+INSERT INTO "auth_permission" VALUES(51,'Can delete composite component',17,'delete_compositecomponent');
+CREATE TABLE "auth_group_permissions" (
+    "id" integer NOT NULL PRIMARY KEY,
+    "group_id" integer NOT NULL,
+    "permission_id" integer NOT NULL REFERENCES "auth_permission" ("id"),
+    UNIQUE ("group_id", "permission_id")
+);
+CREATE TABLE "auth_group" (
+    "id" integer NOT NULL PRIMARY KEY,
+    "name" varchar(80) NOT NULL UNIQUE
+);
+CREATE TABLE "auth_user_groups" (
+    "id" integer NOT NULL PRIMARY KEY,
+    "user_id" integer NOT NULL,
+    "group_id" integer NOT NULL REFERENCES "auth_group" ("id"),
+    UNIQUE ("user_id", "group_id")
+);
+CREATE TABLE "auth_user_user_permissions" (
+    "id" integer NOT NULL PRIMARY KEY,
+    "user_id" integer NOT NULL,
+    "permission_id" integer NOT NULL REFERENCES "auth_permission" ("id"),
+    UNIQUE ("user_id", "permission_id")
+);
+CREATE TABLE "auth_user" (
+    "id" integer NOT NULL PRIMARY KEY,
+    "password" varchar(128) NOT NULL,
+    "last_login" datetime NOT NULL,
+    "is_superuser" bool NOT NULL,
+    "username" varchar(30) NOT NULL UNIQUE,
+    "first_name" varchar(30) NOT NULL,
+    "last_name" varchar(30) NOT NULL,
+    "email" varchar(75) NOT NULL,
+    "is_staff" bool NOT NULL,
+    "is_active" bool NOT NULL,
+    "date_joined" datetime NOT NULL
+);
+INSERT INTO "auth_user" VALUES(1,'pbkdf2_sha256$10000$s89oo2mYKyRe$cQ5r+SqhS7jPhXnFoIgQXdICd0tQDQgSg1V8OVHXhzU=','2013-09-16 23:43:05.505000',1,'agustin','','','disagol@gmail.com',1,1,'2013-06-10 23:24:12.597000');
+CREATE TABLE "django_content_type" (
+    "id" integer NOT NULL PRIMARY KEY,
+    "name" varchar(100) NOT NULL,
+    "app_label" varchar(100) NOT NULL,
+    "model" varchar(100) NOT NULL,
+    UNIQUE ("app_label", "model")
+);
+INSERT INTO "django_content_type" VALUES(1,'permission','auth','permission');
+INSERT INTO "django_content_type" VALUES(2,'group','auth','group');
+INSERT INTO "django_content_type" VALUES(3,'user','auth','user');
+INSERT INTO "django_content_type" VALUES(4,'content type','contenttypes','contenttype');
+INSERT INTO "django_content_type" VALUES(5,'session','sessions','session');
+INSERT INTO "django_content_type" VALUES(6,'site','sites','site');
+INSERT INTO "django_content_type" VALUES(7,'log entry','admin','logentry');
+INSERT INTO "django_content_type" VALUES(8,'server','wStationMgr','server');
+INSERT INTO "django_content_type" VALUES(9,'logical device','wStationMgr','logicaldevice');
+INSERT INTO "django_content_type" VALUES(10,'logical node','wStationMgr','logicalnode');
+INSERT INTO "django_content_type" VALUES(11,'data','wStationMgr','data');
+INSERT INTO "django_content_type" VALUES(12,'composite data','wStationMgr','compositedata');
+INSERT INTO "django_content_type" VALUES(13,'basic type','wStationMgr','basictype');
+INSERT INTO "django_content_type" VALUES(14,'functional constraint','wStationMgr','functionalconstraint');
+INSERT INTO "django_content_type" VALUES(15,'attribute type data','wStationMgr','attributetypedata');
+INSERT INTO "django_content_type" VALUES(16,'attribute data','wStationMgr','attributedata');
+INSERT INTO "django_content_type" VALUES(17,'composite component','wStationMgr','compositecomponent');
+CREATE TABLE "django_session" (
+    "session_key" varchar(40) NOT NULL PRIMARY KEY,
+    "session_data" text NOT NULL,
+    "expire_date" datetime NOT NULL
+);
+INSERT INTO "django_session" VALUES('cmpxe05gdfx2k0mprvbyagt58538d0qm','NzBhMjg1MzAyZGFkNjFlMmY2NTI0MmYwMjVkM2UzMzE5YzZhYTVhMjqAAn1xAShVEl9hdXRoX3VzZXJfYmFja2VuZHECVSlkamFuZ28uY29udHJpYi5hdXRoLmJhY2tlbmRzLk1vZGVsQmFja2VuZHEDVQ1fYXV0aF91c2VyX2lkcQRLAXUu','2013-06-24 23:25:01.002000');
+INSERT INTO "django_session" VALUES('n4txiqfor7lljd0f2npfbplabsj1z5vg','NzBhMjg1MzAyZGFkNjFlMmY2NTI0MmYwMjVkM2UzMzE5YzZhYTVhMjqAAn1xAShVEl9hdXRoX3VzZXJfYmFja2VuZHECVSlkamFuZ28uY29udHJpYi5hdXRoLmJhY2tlbmRzLk1vZGVsQmFja2VuZHEDVQ1fYXV0aF91c2VyX2lkcQRLAXUu','2013-07-26 01:48:29.518000');
+INSERT INTO "django_session" VALUES('agxghp210pf7zqr2hsfazcojuk6zx5ap','NzBhMjg1MzAyZGFkNjFlMmY2NTI0MmYwMjVkM2UzMzE5YzZhYTVhMjqAAn1xAShVEl9hdXRoX3VzZXJfYmFja2VuZHECVSlkamFuZ28uY29udHJpYi5hdXRoLmJhY2tlbmRzLk1vZGVsQmFja2VuZHEDVQ1fYXV0aF91c2VyX2lkcQRLAXUu','2013-08-24 20:02:40.125000');
+INSERT INTO "django_session" VALUES('3lma1rz40hw9pn479mme66jw07nmdlpb','NzBhMjg1MzAyZGFkNjFlMmY2NTI0MmYwMjVkM2UzMzE5YzZhYTVhMjqAAn1xAShVEl9hdXRoX3VzZXJfYmFja2VuZHECVSlkamFuZ28uY29udHJpYi5hdXRoLmJhY2tlbmRzLk1vZGVsQmFja2VuZHEDVQ1fYXV0aF91c2VyX2lkcQRLAXUu','2013-09-30 23:43:05.565000');
+CREATE TABLE "django_site" (
+    "id" integer NOT NULL PRIMARY KEY,
+    "domain" varchar(100) NOT NULL,
+    "name" varchar(50) NOT NULL
+);
+INSERT INTO "django_site" VALUES(1,'example.com','example.com');
+CREATE TABLE "django_admin_log" (
+    "id" integer NOT NULL PRIMARY KEY,
+    "action_time" datetime NOT NULL,
+    "user_id" integer NOT NULL REFERENCES "auth_user" ("id"),
+    "content_type_id" integer REFERENCES "django_content_type" ("id"),
+    "object_id" text,
+    "object_repr" varchar(200) NOT NULL,
+    "action_flag" smallint unsigned NOT NULL,
+    "change_message" text NOT NULL
+);
+INSERT INTO "django_admin_log" VALUES(1,'2013-06-10 23:25:20.971000',1,8,'1','Server ECH2',1,'');
+INSERT INTO "django_admin_log" VALUES(2,'2013-06-10 23:25:26.793000',1,8,'2','Server Google',1,'');
+INSERT INTO "django_admin_log" VALUES(3,'2013-06-10 23:25:35.370000',1,8,'3','Server T1',1,'');
+INSERT INTO "django_admin_log" VALUES(4,'2013-06-10 23:26:22.264000',1,9,'1','LD N1',1,'');
+INSERT INTO "django_admin_log" VALUES(5,'2013-06-10 23:27:34.735000',1,9,'2','LD T1',1,'');
+INSERT INTO "django_admin_log" VALUES(6,'2013-06-10 23:28:06.106000',1,9,'3','LD G1',1,'');
+INSERT INTO "django_admin_log" VALUES(7,'2013-09-16 00:26:21.539000',1,10,'1','LN RR1',1,'');
+INSERT INTO "django_admin_log" VALUES(8,'2013-09-16 00:26:46.039000',1,10,'2','LN HH1',1,'');
+INSERT INTO "django_admin_log" VALUES(9,'2013-09-16 00:27:10.379000',1,10,'3','LN MM1',1,'');
+INSERT INTO "django_admin_log" VALUES(10,'2013-09-16 03:30:22.244000',1,11,'1','Data DRR12',1,'');
+INSERT INTO "django_admin_log" VALUES(11,'2013-09-16 03:30:40.464000',1,11,'2','Data DRR22',1,'');
+INSERT INTO "django_admin_log" VALUES(12,'2013-09-16 03:31:16.704000',1,11,'3','Data DHH12',1,'');
+INSERT INTO "django_admin_log" VALUES(13,'2013-09-16 21:14:08.323000',1,12,'1','Composite Data CDRR1',1,'');
+INSERT INTO "django_admin_log" VALUES(14,'2013-09-16 21:14:35.823000',1,12,'2','Composite Data CDRR2',1,'');
+INSERT INTO "django_admin_log" VALUES(15,'2013-09-16 21:15:00.623000',1,12,'3','Composite Data CDHH1',1,'');
+INSERT INTO "django_admin_log" VALUES(16,'2013-09-16 21:20:23.324000',1,14,'1','Functional Constraint 1',1,'');
+INSERT INTO "django_admin_log" VALUES(17,'2013-09-16 21:20:31.825000',1,14,'2','Functional Constraint 2',1,'');
+INSERT INTO "django_admin_log" VALUES(18,'2013-09-16 21:20:43.775000',1,14,'3','Functional Constraint 3',1,'');
+INSERT INTO "django_admin_log" VALUES(19,'2013-09-16 21:28:11.066000',1,13,'1','Tipo Basico 1',1,'');
+INSERT INTO "django_admin_log" VALUES(20,'2013-09-16 21:28:16.426000',1,13,'2','Tipo Basico 2',1,'');
+INSERT INTO "django_admin_log" VALUES(21,'2013-09-16 21:28:22.656000',1,13,'3','Tipo Basico 3',1,'');
+INSERT INTO "django_admin_log" VALUES(22,'2013-09-16 21:29:48.406000',1,15,'1','Attribute Type Data 1',1,'');
+INSERT INTO "django_admin_log" VALUES(23,'2013-09-16 21:30:01.966000',1,15,'2','Attribute Type Data 2',1,'');
+INSERT INTO "django_admin_log" VALUES(24,'2013-09-16 21:30:17.026000',1,15,'3','Attribute Type Data 3',1,'');
+INSERT INTO "django_admin_log" VALUES(25,'2013-09-16 21:39:05.187000',1,16,'1','AttributeData object',1,'');
+INSERT INTO "django_admin_log" VALUES(26,'2013-09-16 21:39:13.537000',1,16,'2','AttributeData object',1,'');
+INSERT INTO "django_admin_log" VALUES(27,'2013-09-16 21:39:25.227000',1,16,'3','AttributeData object',1,'');
+INSERT INTO "django_admin_log" VALUES(28,'2013-09-16 21:39:34.397000',1,16,'4','AttributeData object',1,'');
+INSERT INTO "django_admin_log" VALUES(29,'2013-09-16 21:43:27.197000',1,16,'1','AttributeData object',1,'');
+INSERT INTO "django_admin_log" VALUES(30,'2013-09-16 21:43:32.967000',1,16,'2','AttributeData object',1,'');
+INSERT INTO "django_admin_log" VALUES(31,'2013-09-16 21:43:44.017000',1,16,'3','AttributeData object',1,'');
+INSERT INTO "django_admin_log" VALUES(32,'2013-09-16 21:45:46.437000',1,17,'1','Composite Component 1',1,'');
+INSERT INTO "django_admin_log" VALUES(33,'2013-09-16 21:46:01.057000',1,17,'2','Composite Component 2',1,'');
+INSERT INTO "django_admin_log" VALUES(34,'2013-09-16 21:46:16.847000',1,17,'3','Composite Component 3',1,'');
+INSERT INTO "django_admin_log" VALUES(35,'2013-09-16 21:46:33.468000',1,17,'4','Composite Component 32',1,'');
+INSERT INTO "django_admin_log" VALUES(36,'2013-09-25 00:18:54.314000',1,9,'2','LD T1',2,'Changed reference.');
+INSERT INTO "django_admin_log" VALUES(37,'2013-09-25 00:29:01.590000',1,9,'2','LD T1',2,'Changed reference.');
+CREATE TABLE "wStationMgr_server" (
+    "id" integer NOT NULL PRIMARY KEY,
+    "name" varchar(50) NOT NULL,
+    "ip_address" varchar(20) NOT NULL,
+    "description" varchar(100),
+    "created_date" datetime NOT NULL,
+    "modified_date" datetime NOT NULL
+);
+INSERT INTO "wStationMgr_server" VALUES(1,'Server ECH2','10.25.26.32','Servidor de telecomunicaciones E1','2013-06-10 23:25:20.969000','2013-06-10 23:25:20.969000');
+INSERT INTO "wStationMgr_server" VALUES(2,'Server Google','192.100.104.4','Servidor de correo google','2013-06-10 23:25:26.792000','2013-06-10 23:25:26.792000');
+INSERT INTO "wStationMgr_server" VALUES(3,'Server T1','190.169.100.45','Servidor de telecontrol N1','2013-06-10 23:25:35.368000','2013-06-10 23:25:35.368000');
+CREATE TABLE "wStationMgr_logicaldevice" (
+    "id" integer NOT NULL PRIMARY KEY,
+    "name" varchar(50) NOT NULL,
+    "reference" varchar(20) NOT NULL,
+    "created_date" datetime NOT NULL,
+    "modified_date" datetime NOT NULL,
+    "server_id" integer NOT NULL REFERENCES "wStationMgr_server" ("id")
+);
+INSERT INTO "wStationMgr_logicaldevice" VALUES(1,'LD N1','NDF432','2013-06-10 23:26:22.263000','2013-06-10 23:26:22.263000',2);
+INSERT INTO "wStationMgr_logicaldevice" VALUES(2,'LD T1','NDF788','2013-06-10 23:27:34.734000','2013-09-25 00:29:01.587000',1);
+INSERT INTO "wStationMgr_logicaldevice" VALUES(3,'LD G1','NDXZ788','2013-06-10 23:28:06.104000','2013-06-10 23:28:06.105000',2);
+CREATE TABLE "wStationMgr_logicalnode" (
+    "id" integer NOT NULL PRIMARY KEY,
+    "name" varchar(50) NOT NULL,
+    "ref" varchar(20) NOT NULL,
+    "created_date" datetime NOT NULL,
+    "modified_date" datetime NOT NULL,
+    "logical_device_id" integer NOT NULL REFERENCES "wStationMgr_logicaldevice" ("id")
+);
+INSERT INTO "wStationMgr_logicalnode" VALUES(1,'LN RR1','LNRR1321','2013-09-16 00:26:21.539000','2013-09-16 00:26:21.539000',2);
+INSERT INTO "wStationMgr_logicalnode" VALUES(2,'LN HH1','LNHH1543','2013-09-16 00:26:46.039000','2013-09-16 00:26:46.039000',3);
+INSERT INTO "wStationMgr_logicalnode" VALUES(3,'LN MM1','LNMM1987','2013-09-16 00:27:10.379000','2013-09-16 00:27:10.379000',1);
+CREATE TABLE "wStationMgr_compositedata" (
+    "id" integer NOT NULL PRIMARY KEY,
+    "name" varchar(50) NOT NULL,
+    "ref" varchar(20) NOT NULL,
+    "presence" varchar(20) NOT NULL,
+    "created_date" datetime NOT NULL,
+    "modified_date" datetime NOT NULL,
+    "data_id" integer NOT NULL REFERENCES "wStationMgr_data" ("id")
+);
+INSERT INTO "wStationMgr_compositedata" VALUES(1,'Composite Data CDRR1','CDCDRR1','Pr 11','2013-09-16 21:14:08.323000','2013-09-16 21:14:08.323000',1);
+INSERT INTO "wStationMgr_compositedata" VALUES(2,'Composite Data CDRR2','CDCDRR2','Pr 12','2013-09-16 21:14:35.823000','2013-09-16 21:14:35.823000',2);
+INSERT INTO "wStationMgr_compositedata" VALUES(3,'Composite Data CDHH1','CDCDHH1','Pr 13','2013-09-16 21:15:00.623000','2013-09-16 21:15:00.623000',3);
+CREATE TABLE "wStationMgr_functionalconstraint" (
+    "id" integer NOT NULL PRIMARY KEY,
+    "name" varchar(50) NOT NULL,
+    "semantic" varchar(50) NOT NULL,
+    "created_date" datetime NOT NULL,
+    "modified_date" datetime NOT NULL
+);
+INSERT INTO "wStationMgr_functionalconstraint" VALUES(1,'Functional Constraint 1','FC1','2013-09-16 21:20:23.314000','2013-09-16 21:20:23.314000');
+INSERT INTO "wStationMgr_functionalconstraint" VALUES(2,'Functional Constraint 2','FC2','2013-09-16 21:20:31.825000','2013-09-16 21:20:31.825000');
+INSERT INTO "wStationMgr_functionalconstraint" VALUES(3,'Functional Constraint 3','FC3','2013-09-16 21:20:43.775000','2013-09-16 21:20:43.775000');
+CREATE TABLE "wStationMgr_attributetypedata" (
+    "id" integer NOT NULL PRIMARY KEY,
+    "name" varchar(50) NOT NULL,
+    "ref" varchar(20) NOT NULL,
+    "presence" varchar(20) NOT NULL,
+    "created_date" datetime NOT NULL,
+    "modified_date" datetime NOT NULL,
+    "basic_type_id" integer NOT NULL UNIQUE REFERENCES "wStationMgr_basictype" ("id")
+);
+INSERT INTO "wStationMgr_attributetypedata" VALUES(1,'Attribute Type Data 1','ATD1','Pr 20','2013-09-16 21:29:48.406000','2013-09-16 21:29:48.406000',1);
+INSERT INTO "wStationMgr_attributetypedata" VALUES(2,'Attribute Type Data 2','ATD2','Pr 21','2013-09-16 21:30:01.966000','2013-09-16 21:30:01.966000',2);
+INSERT INTO "wStationMgr_attributetypedata" VALUES(3,'Attribute Type Data 3','ATD3','Pr 22','2013-09-16 21:30:17.016000','2013-09-16 21:30:17.016000',3);
+CREATE TABLE "wStationMgr_compositecomponent" (
+    "id" integer NOT NULL PRIMARY KEY,
+    "name" varchar(50) NOT NULL,
+    "ref" varchar(20) NOT NULL,
+    "presence" varchar(50) NOT NULL,
+    "created_date" datetime NOT NULL,
+    "modified_date" datetime NOT NULL,
+    "attribute_type_data_id" integer NOT NULL REFERENCES "wStationMgr_attributetypedata" ("id")
+);
+INSERT INTO "wStationMgr_compositecomponent" VALUES(1,'Composite Component 1','CC1','Pr 30','2013-09-16 21:45:46.437000','2013-09-16 21:45:46.437000',1);
+INSERT INTO "wStationMgr_compositecomponent" VALUES(2,'Composite Component 2','CC2','Pr 31','2013-09-16 21:46:01.047000','2013-09-16 21:46:01.047000',2);
+INSERT INTO "wStationMgr_compositecomponent" VALUES(3,'Composite Component 3','CC3','Pr 32','2013-09-16 21:46:16.837000','2013-09-16 21:46:16.837000',3);
+INSERT INTO "wStationMgr_compositecomponent" VALUES(4,'Composite Component 32','CC32','Pr 35','2013-09-16 21:46:33.458000','2013-09-16 21:46:33.458000',2);
+CREATE TABLE "wStationMgr_data" (
+    "id" integer NOT NULL PRIMARY KEY,
+    "name" varchar(50) NOT NULL,
+    "ref" varchar(20) NOT NULL,
+    "presence" varchar(20) NOT NULL,
+    "created_date" datetime NOT NULL,
+    "modified_date" datetime NOT NULL,
+    "logical_node_id" integer NOT NULL REFERENCES "wStationMgr_logicalnode" ("id
+")
+);
+INSERT INTO "wStationMgr_data" VALUES(1,'Data DRR12','DRR12XXX','Pr 5','2013-09-16 03:30:22.244000','2013-09-16 03:30:22.244000',1);
+INSERT INTO "wStationMgr_data" VALUES(2,'Data DRR22','DRR12CCC','Pr 6','2013-09-16 03:30:40.454000','2013-09-16 03:30:40.454000',1);
+INSERT INTO "wStationMgr_data" VALUES(3,'Data DHH12','DNN12VVV','Pr 4','2013-09-16 03:31:16.704000','2013-09-16 03:31:16.704000',2);
+CREATE TABLE "wStationMgr_basictype" (
+    "id" integer NOT NULL PRIMARY KEY,
+    "name" varchar(15) NOT NULL,
+    "created_date" datetime NOT NULL,
+    "modified_date" datetime NOT NULL
+);
+INSERT INTO "wStationMgr_basictype" VALUES(1,'Tipo Basico 1','2013-09-16 21:28:11.066000','2013-09-16 21:28:11.066000');
+INSERT INTO "wStationMgr_basictype" VALUES(2,'Tipo Basico 2','2013-09-16 21:28:16.416000','2013-09-16 21:28:16.416000');
+INSERT INTO "wStationMgr_basictype" VALUES(3,'Tipo Basico 3','2013-09-16 21:28:22.656000','2013-09-16 21:28:22.656000');
+CREATE TABLE "wStationMgr_attributedata" (
+    "id" integer NOT NULL PRIMARY KEY,
+    "data_id" integer NOT NULL REFERENCES "wStationMgr_data" ("id"),
+    "created_date" datetime NOT NULL,
+    "modified_date" datetime NOT NULL,
+    "attribute_type_data_id" integer NOT NULL REFERENCES "wStationMgr_attributet
+ypedata" ("id"),
+    "functional_constraint_id" integer NOT NULL REFERENCES "wStationMgr_function
+alconstraint" ("id")
+);
+INSERT INTO "wStationMgr_attributedata" VALUES(1,1,'2013-09-16 21:43:27.197000','2013-09-16 21:43:27.197000',1,1);
+INSERT INTO "wStationMgr_attributedata" VALUES(2,2,'2013-09-16 21:43:32.957000','2013-09-16 21:43:32.957000',2,2);
+INSERT INTO "wStationMgr_attributedata" VALUES(3,3,'2013-09-16 21:43:44.017000','2013-09-16 21:43:44.017000',1,3);
+CREATE INDEX "auth_permission_37ef4eb4" ON "auth_permission" ("content_type_id");
+CREATE INDEX "auth_group_permissions_5f412f9a" ON "auth_group_permissions" ("group_id");
+CREATE INDEX "auth_group_permissions_83d7f98b" ON "auth_group_permissions" ("permission_id");
+CREATE INDEX "auth_user_groups_6340c63c" ON "auth_user_groups" ("user_id");
+CREATE INDEX "auth_user_groups_5f412f9a" ON "auth_user_groups" ("group_id");
+CREATE INDEX "auth_user_user_permissions_6340c63c" ON "auth_user_user_permissions" ("user_id");
+CREATE INDEX "auth_user_user_permissions_83d7f98b" ON "auth_user_user_permissions" ("permission_id");
+CREATE INDEX "django_session_b7b81f0c" ON "django_session" ("expire_date");
+CREATE INDEX "django_admin_log_6340c63c" ON "django_admin_log" ("user_id");
+CREATE INDEX "django_admin_log_37ef4eb4" ON "django_admin_log" ("content_type_id");
+CREATE INDEX "wStationMgr_logicaldevice_2f18fe12" ON "wStationMgr_logicaldevice" ("server_id");
+CREATE INDEX "wStationMgr_logicalnode_e33297f7" ON "wStationMgr_logicalnode" ("logical_device_id");
+CREATE INDEX "wStationMgr_compositedata_3d40d808" ON "wStationMgr_compositedata" ("data_id");
+CREATE INDEX "wStationMgr_compositecomponent_bb30233e" ON "wStationMgr_compositecomponent" ("attribute_type_data_id");
+COMMIT;

@@ -1,0 +1,92 @@
+{% load staticfiles %}
+{% load mptt_tags %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'wStationMgr/tablesorter.css' %}" />
+<script type="text/javascript" src="{% static 'wStationMgr/js/jquery.tablesorter.mod.js' %}"></script>
+<script type="text/javascript" src="{% static 'wStationMgr/js/jquery.tablesorter.collapsible.js' %}"></script>
+<script type="text/javascript" src="{% static 'wStationMgr/js/jquery.tablesorter.pager.js' %}"></script>
+
+
+<script type="text/javascript">	
+	$(document).ready(
+			function (){
+				$(".tablesorter")
+				/*
+				 * td.collapsible = collapse to the first table row and show +/-
+				 * td.collapsible_alt = anchor to order number
+				 */
+				.collapsible("td.collapsible", {
+					collapse: true
+				})
+				.tablesorter({
+				// set default sort column
+				sortList: [[1,0]],
+				// don't sort by first column
+				headers: {0: {sorter: false}}
+				// set the widgets being used - zebra stripping
+				, widgets: ['zebra']
+				, onRenderHeader: function (){
+					this.wrapInner("<span></span>");
+				}
+				, debug: false
+			})
+			.tablesorterPager({container: $("#pager"), positionFixed: false})
+				;
+			}
+	);
+</script>
+
+
+<table class="grid tablesorter" cellspacing="0" style="width: auto;">
+			<colgroup>
+				<col width="19" /><col width="39" /> <col width="65" /> <col width="150" /><col width="250" /><col width="150" /><col width="60" /><col width="50" /><col width="40" />
+			</colgroup>
+			<thead>	<tr> 
+					<th style="padding: 0; margin: 0;"></th>
+					<th> Nodo </th>
+					<th> Tipo </th>
+					<th> Titulo </th>
+					<th> Descripci&oacute;n </th>
+					<th> Modificado </th>
+					<th> Nivel 1</th>
+					<th> Total </th>
+					<th> Acciones </th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for root in root_list %}				
+					{% if  forloop.counter|divisibleby:2 %}
+						<tr>
+					{% else %}
+						<tr class="even">
+					{% endif %}
+						<td rowspan="{{ root.nodes_list.count|add:"1" }}" class="collapsible"> </td>
+						<td rowspan="{{ root.nodes_list.count|add:"1" }}" class="collapsible_alt"> {{ root.name }} </td> <!-- Red -->
+						<td> {{ root.get_verbose_name}} </td>
+						<td> {{ root.title }} </td>
+						<td> {{ root.description }} </td>
+						<td> {{ root.modified_date }} </td>
+						<td> {{ root.get_children.count }} </td>
+						<td> {{ root.get_descendant_count }}</td>
+						<td> <a href="{% url 'wStationMgr:tree' root.id %}"><img title="Ver arbol" src="{% static 'wStationMgr/images/arrow_tree.gif' %}" /></a> </td>
+						</tr>
+						{% if root.get_immediate_nodes %}
+							{% for node in root.get_immediate_nodes %}
+								{% if forloop.parentloop.counter|divisibleby:2 %}
+									<tr class="expand-child">
+								{% else %}
+									<tr class="expand-child even">
+										{% endif %}
+										<td colspan="1"> <div class="bold">{{ node.get_verbose_name}}</div></td>
+										<td>{{ node.name }}</td>
+										<td>{{ node.description }}</td>
+										<td>{{ node.modified_date }}</td>
+										<td>{{ node.get_children.count }}</td>
+										<td>{{ node.get_descendant_count}}</td>
+										<td></td>
+									</tr>
+							{% endfor %}
+						{% endif %}	
+	        	    	{% endfor %}
+			</tbody>
+</table>	

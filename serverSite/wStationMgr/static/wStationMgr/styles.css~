@@ -1,0 +1,33 @@
+body {
+    text-align:center;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+
+ul {
+    list-style-type: none;	
+}
+
+li a {
+    color: green;
+}
+
+#content {
+width:auto;
+margin:0 auto;
+text-align:left;
+}
+
+
+#header {
+width:auto;
+margin:0 auto;
+text-align:center;
+}
+
+#header .info_section {
+margin:0 auto;
+text-align:left;
+}
+
+

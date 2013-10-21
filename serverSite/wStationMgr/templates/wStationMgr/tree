@@ -1,0 +1,56 @@
+{% extends "wStationMgr/base.html" %}
+
+{% load staticfiles %}
+
+{% block extra_ref %}	
+	<link type="text/css" href="{% static 'wStationMgr/css/base.css' %}" rel="stylesheet" />
+	<link type="text/css" href="{% static 'wStationMgr/css/spacetree.css' %}" rel="stylesheet" />
+	<script type="text/javascript" src="{% static 'wStationMgr/js/Jit/jit.js' %}"></script>
+	<script type="text/javascript" src="{% static 'wStationMgr/js/tree.js' %}"></script>
+{% endblock %}
+
+{% block inline_script %}
+	<script type="text/javascript">
+
+	var json =    
+	{
+	    id: "{{ root.id }}",   
+	    name: "{{ root.title }}",   
+	    data: { "data": "{{root}}" },   
+	    children: [{% recursetree root_childs %}
+	    {
+        	id: "{{ node.id }}",   
+	        name: "{{ node.title }}",   
+        	data: { "data": "{{node}}"},   
+	        children: [{{ children }}]
+	    },
+	    {% endrecursetree %}]
+	};
+ 
+	var json_str = JSON.stringify( json ).replace(",]","]");
+	var json = JSON.parse(json_str);
+
+	$(function() {
+	    init();
+	});
+	
+	</script>
+{% endblock %}	
+
+{% block content %}	
+
+<div id="log"></div>
+<div id="inner-details"></div>
+<div id="center-container">
+    <div id="infovis"></div>    
+</div>
+
+<input type="hidden" id="s-normal" name="selection" checked="checked" value="normal" />
+
+{% endblock %}	
+
+</body>
+</html>
+
+
+

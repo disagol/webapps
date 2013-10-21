@@ -1,0 +1,224 @@
+from django.contrib import admin
+from wStationMgr.forms import MyServerForm
+from wStationMgr.models import Server,LogicalDevice,LogicalNode,Data,CompositeData,BasicType,FunctionalConstraint,AttributeTypeData,AttributeData,CompositeComponent, BaseTreeNode,Network,NodeType
+from django.core import urlresolvers
+from django.utils.safestring import mark_safe  
+from mptt.admin import MPTTModelAdmin
+from polymorphic_tree.admin import PolymorphicMPTTParentModelAdmin, PolymorphicMPTTChildModelAdmin
+
+# The common admin functionality for all derived models:
+
+class BaseChildAdmin(PolymorphicMPTTChildModelAdmin):
+    GENERAL_FIELDSET = (None, {
+        'fields': ('parent', 'title'),
+    })
+
+
+    base_model = BaseTreeNode
+    base_fieldsets = (
+        GENERAL_FIELDSET,
+    )
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+	node_type_name = self.get_node_type()    
+        if db_field.name == "parent":
+            kwargs["queryset"] = BaseTreeNode.objects.filter( node_type__in = NodeType.objects.get(name=node_type_name).allowed_parents.all() ) 
+
+        return super(BaseChildAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+
+
+class NetworkAdmin(BaseChildAdmin):	
+    fieldsets = [
+        ('Tree Node',               {'fields': ['parent','title', 'node_type']}),
+        ('Additional information', {'fields': ['name','description','security_protocol','active'], 'classes': ['collapse']}),
+    ]
+
+    readonly_fields = ('node_type',)
+    list_display = ['name','created_date','modified_date']
+    date_hierarchy = 'modified_date'
+
+    def get_node_type(self):
+	    return 'Network'
+
+
+
+class ServerAdmin(BaseChildAdmin):
+    form = MyServerForm	 
+	
+    fieldsets = [
+        ('Tree Node',               {'fields': ['parent','title','node_type']}),
+        ('Additional information', {'fields': ['name','ip_address','description', 'os','active'], 'classes': ['collapse']}),
+    ]
+
+    readonly_fields = ('node_type',)
+    list_display = ['name','created_date','modified_date']
+    date_hierarchy = 'modified_date'
+
+    def get_node_type(self):
+	    return 'Server'
+
+class LogicalDeviceAdmin(BaseChildAdmin):
+    fieldsets = [
+        ('Tree Node',               {'fields': ['parent','title','node_type','description']}),
+        ('Additional information', {'fields': ['name','ref','active'], 'classes': ['collapse']}),
+    ]
+
+    readonly_fields = ('node_type',)
+    search_fields = ['ref']	
+    list_display = ['name','ref','created_date','modified_date','servers']
+    	
+    def servers(self, obj):
+	    change_url = urlresolvers.reverse('admin:wStationMgr_server_change', args=(obj.server.id,))
+	    return mark_safe(u'<a href="%s">%s</a>' % (change_url,obj.server.name))
+
+    servers.allow_tags = True 
+
+    def get_node_type(self):
+	    return 'LogicalDevice'
+
+class LogicalNodeAdmin(BaseChildAdmin):
+    fieldsets = [
+        ('Tree Node',               {'fields': ['parent', 'title','node_type','description']}),
+        ('Additional information', {'fields': ['name','ref','active'], 'classes': ['collapse']}),
+    ]
+
+    readonly_fields = ('node_type',)
+    search_fields = ['ref']	
+    list_display = ['name','ref','created_date','modified_date','logical_devices']
+    
+    def logical_devices(self, obj):
+	    change_url = urlresolvers.reverse('admin:wStationMgr_logicaldevice_change', args=(obj.logical_device.id,))
+	    return mark_safe(u'<a href="%s">%s</a>' % (change_url,obj.logical_device.name))
+
+    logical_devices.allow_tags = True
+
+
+    def get_node_type(self):
+	    return 'LogicalNode'
+
+class DataAdmin(BaseChildAdmin):
+    fieldsets = [
+        ('Tree Node',               {'fields': ['parent','title', 'node_type', 'description']}),
+        ('Additional information', {'fields': ['name','ref','presence','active'], 'classes': ['collapse']}),
+    ]
+
+    readonly_fields = ('node_type',)
+    search_fields = ['ref']	
+    list_display = ['name','ref','created_date','modified_date','logical_nodes']
+
+    def logical_nodes(self, obj):
+	    change_url = urlresolvers.reverse('admin:wStationMgr_logicalnode_change', args=(obj.logical_node.id,))
+	    return mark_safe(u'<a href="%s">%s</a>' % (change_url,obj.logical_node.name))
+
+    logical_nodes.allow_tags = True
+
+    def get_node_type(self):
+	    return 'Data'
+
+
+class CompositeDataAdmin(admin.ModelAdmin):
+    fieldsets = [
+        (None,               {'fields': ['name','data']}),
+        ('Additional information', {'fields': ['ref','presence'], 'classes': ['collapse']}),
+    ]
+	
+    search_fields = ['ref']	
+    list_display = ['name','ref','created_date','modified_date','datas']
+
+    def datas(self, obj):
+	   change_url = urlresolvers.reverse('admin:wStationMgr_data_change', args=(obj.data.id,))
+	   return mark_safe(u'<a href="%s">%s</a>' % (change_url,obj.data.name))
+
+    datas.allow_tags = True
+
+admin.site.register(CompositeData, CompositeDataAdmin)
+
+class BasicTypeAdmin(admin.ModelAdmin):
+    fieldsets = [ (None, {'fields': ['name','length']}) ]
+    list_display = ['name','length','created_date','modified_date']
+
+admin.site.register(BasicType, BasicTypeAdmin)
+
+
+class FunctionalConstraintAdmin(admin.ModelAdmin):
+    fieldsets = [ (None, {'fields': ['name','semantic']}) ]
+    list_display = ['name','created_date','modified_date','semantic']
+
+admin.site.register(FunctionalConstraint, FunctionalConstraintAdmin)
+	
+
+class AttributeTypeDataAdmin(admin.ModelAdmin):
+    fieldsets = [
+        (None,               {'fields': ['name','basic_type']}),
+        ('Additional information', {'fields': ['ref','presence'], 'classes': ['collapse']}),
+    ]
+    list_display = ['name','created_date','modified_date','basic_types']
+
+    def basic_types(self, obj):
+	   change_url = urlresolvers.reverse('admin:wStationMgr_basictype_change', args=(obj.basic_type.id,))
+	   return mark_safe(u'<a href="%s">%s</a>' % (change_url,obj.basic_type.name))
+
+    basic_types.allow_tags = True
+
+admin.site.register(AttributeTypeData, AttributeTypeDataAdmin)
+
+
+class AttributeDataAdmin(admin.ModelAdmin):
+    fieldsets = [ (None, {'fields': ['data','attribute_type_data','functional_constraint']}) ]
+
+    list_display = ['id','data','created_date','modified_date','attribute_type_data','functional_constraint']
+
+admin.site.register(AttributeData, AttributeDataAdmin)
+
+
+class CompositeComponentAdmin(admin.ModelAdmin):
+    fieldsets = [
+        (None,               {'fields': ['name','attribute_type_data']}),
+        ('Additional information', {'fields': ['ref','presence'], 'classes': ['collapse']}),
+    ]
+    list_display = ['name','created_date','modified_date','attribute_type_datas']
+
+    def attribute_type_datas(self, obj):
+	   change_url = urlresolvers.reverse('admin:wStationMgr_attributetypedata_change', args=(obj.attribute_type_data.id,))
+	   return mark_safe(u'<a href="%s">%s</a>' % (change_url,obj.attribute_type_data.name))
+
+    attribute_type_datas.allow_tags = True
+
+admin.site.register(CompositeComponent, CompositeComponentAdmin)   
+
+
+class NodeTypeAdmin(admin.ModelAdmin):
+    fields = ( 'name','allowed_parents' )
+
+    list_display = ['name','allowed_type_parents','created_date','modified_date']
+    
+    def allowed_type_parents(self, obj):
+        return ', '.join( [a.name for a in obj.allowed_parents.all()] )   
+
+    allowed_type_parents.short_description = "Allowed Parents"
+    allowed_type_parents.allow_tags = True
+
+admin.site.register(NodeType, NodeTypeAdmin)   
+
+# Create the parent admin that combines it all:
+
+class TreeNodeParentAdmin(PolymorphicMPTTParentModelAdmin):
+    base_model = BaseTreeNode
+    child_models = (     
+	(Network, NetworkAdmin),	    
+	(Server, ServerAdmin),
+	(LogicalDevice, LogicalDeviceAdmin),
+	(LogicalNode, LogicalNodeAdmin),
+	(Data, DataAdmin)
+    )
+
+    list_display = ('title', 'actions_column',)
+
+    class Media:
+        css = {
+            'all': ('admin/treenode/admin.css',)
+        }
+
+
+admin.site.register(BaseTreeNode, TreeNodeParentAdmin)
+

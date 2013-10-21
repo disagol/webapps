@@ -1,0 +1,79 @@
+{% extends "wStationMgr/home.html" %}
+
+{% load staticfiles %}
+{% load mptt_tags %}
+
+{% block extra_ref %}	
+	<link type="text/css" href="{% static 'wStationMgr/css/base.css' %}" rel="stylesheet" />
+	<link type="text/css" href="{% static 'wStationMgr/css/spacetree.css' %}" rel="stylesheet" />
+	<script type="text/javascript" src="{% static 'wStationMgr/js/Jit/jit.js' %}"></script>
+	<script type="text/javascript" src="{% static 'wStationMgr/js/tree.js' %}"></script>
+{% endblock %}
+
+{% block inline_script %}
+	<script type="text/javascript">
+
+ 	$(function() {
+			$( "#toogle" ).click(function( e ) {
+				e.preventDefault();
+				$( "#node_details" ).toggle( "slow", function() { // add callback for once the toggle has occured
+        				if ( !$('#node_details').is(":hidden") ) { // is the div showing?
+					    $("#toogle img").attr("src", "{% static 'wStationMgr/images/arrow-up-icon.png' %}");				
+				        } else { // is the div hidden?
+					    $("#toogle img").attr("src", "{% static 'wStationMgr/images/arrow-down-icon.png' %}");
+					}
+			        } );	
+			});
+        });
+
+
+	var json =    
+	{
+	    id: "{{ root.id }}",   
+	    name: "{{ root.name }}",   
+	    data: { "type" : "{{ root.get_verbose_name }}", "immediatte_child_count" : "{{root.get_children.count}}", "total_child_count" : "{{ root.get_descendant_count}}", "is_root" : "{{ root.is_root_node }}", "is_leaf" : "{{ root.is_leaf_node }}", "data": "{{root.get_show_data }}" },   
+	    children: [{% recursetree root_childs %}
+	    {
+        	id: "{{ node.id }}",   
+	        name: "{{ node.name }}",   
+		data: { "type" : "{{ node.get_verbose_name }}", "immediatte_child_count" : "{{node.get_children.count}}" , "total_child_count" : "{{ node.get_descendant_count}}","is_root" : "{{ node.is_root_node }}", "is_leaf" : "{{ node.is_leaf_node }}","data": "{{ node.get_show_data }}"},   
+	        children: [{{ children }}]
+	    },
+	    {% endrecursetree %}]
+	};
+ 
+	var json_str = JSON.stringify( json ).replace(",]","]");
+	var json = JSON.parse(json_str);
+
+	$(function() {
+	    init();
+	});
+	
+	</script>
+{% endblock %}	
+
+{% block header %}
+	<div class="info_section">	
+		<p>	Se visualizan los nodos implicados en la red.       
+		</p>
+	</div>
+{% endblock %}
+{% block content %}	
+
+
+<div id="container">
+	<div id="log">
+		<div id="log_data"></div><a href="#" id="toogle"><img src="{% static 'wStationMgr/images/arrow-down-icon.png' %}" /> </a><!--a id="click_me" href="#">Click Me</a-->
+	</div>
+	<div id="inner-details">
+		<div id="node_details" style="display:none;"></div>
+	</div>
+<div id="center-container">
+    <div id="infovis"></div>    
+</div>
+<input type="hidden" id="s-normal" name="selection" checked="checked" value="normal" />
+</div>
+{% endblock %}	
+
+
+

@@ -1,0 +1,28 @@
+{% load mptt_tags %}
+{% load staticfiles %}
+
+<script type="text/javascript" src="{% static 'wStationMgr/js/jquery-1.2.3.js' %}"></script>
+<script type="text/javascript">
+	var json =    
+	{
+	    id: "{{ root.id }}",   
+	    name: "{{ root.name }}",   
+	    data: { "data": "{{root.get_show_data }}" },   
+	    children: [{% recursetree root_childs %}
+	    {
+        	id: "{{ node.id }}",   
+	        name: "{{ node.name }}",   
+        	data: { "data": "{{ node.get_show_data }}"},   
+	        children: [{{ children }}]
+	    },
+	    {% endrecursetree %}]
+	};
+ 
+	var json_str = JSON.stringify( json ).replace(",]","]");
+	var json = JSON.parse(json_str);	
+	
+	$("body").ready(function() {
+		$("body").html( json_str );
+	});
+</script>
+

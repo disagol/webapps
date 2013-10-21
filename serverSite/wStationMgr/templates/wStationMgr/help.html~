@@ -1,0 +1,98 @@
+{% extends "wStationMgr/home.html" %}
+
+{% load staticfiles %}
+
+{% block extra_ref %}
+{% endblock %}
+
+{% block inline_script %}			
+{% endblock %}	
+
+{% block header %}
+	<div class="info_section">	
+		<p>	Guia de usuario.       
+		</p>
+	</div>
+{% endblock %}
+
+{% block content %}
+	<blockquote> API </blockquote>
+	<fieldset>
+		<legend>Nodos</legend>
+		<h4> Delete </h4>
+		<p> 
+		    <span> Descripcion : Borra nodo con id = 8 </span><br/>
+		    <span> curl -H "Accept: application/json" -X DELETE http://localhost:8000/wStationMgr/api/8/  </span>
+		</p>
+		<h4> Update </h4>
+		<p> 
+		    <span> Descripcion : Actualiza el titulo para nodo con id = 8 </span><br/>
+		    <span> curl -H "Accept: application/json" -X PUT -d "title=Titulo Modificado" http://localhost:8000/wStationMgr/api/8/  </span>
+ 	       </p>
+    		<p> 
+		    <span> Descripcion : Actualiza el titulo para nodo con id = 8 y login </span><br/>
+		    <span> curl -H "Accept: application/json" -X PUT -d "title=Titulo Modificado XXX" -u tester:tester http://localhost:8000/wStationMgr/api/8/  </span>
+	       	</p>
+		<h4> Retrieve </h4>
+		<p> 
+    	 	    <span> Descripcion : Retorna el nodo con id = 8 </span><br/>
+		    <span> curl -H "Accept: application/json" http://localhost:8000/wStationMgr/api/8/  </span> 
+		    </p>
+		<p> 
+    	 	    <span> Descripcion : Retorna hijos del nodo sin incluir al mismo nodo con id = 8 </span><br/>
+		    <span> curl -H "Accept: application/json" "http://localhost:8000/wStationMgr/api/?name=NASA&includeNode=false"  </span> 
+		</p>
+		<h4> Create </h4>
+		<p> 
+    	 	    <span> Descripcion : Retorna hijos del nodo sin incluir al mismo nodo con id = 8 </span><br/>
+		    <span> curl -H "Accept: application/json" -X POST -d  "title=Server Auto&name=ServerWQ&description=Descripcion del servidor Auto&ip_address=168.120.36.36&os=Windows&parent=1"  http://localhost:8000/wStationMgr/api/server/  </span> 		    
+        	</p>
+	</fieldset>
+	<br/>
+	<fieldset>
+		<legend>Data</legend>
+		<h4> Delete </h4>
+		<p> 
+		    <span> Descripcion : Borra nodo con id = 8 </span><br/>
+		    <span> curl -H "Accept: application/json" -X DELETE http://localhost:8000/wStationMgr/api/8/  </span>
+		</p>
+		<h4> Update </h4>
+		<p> 
+		    <span> Descripcion : Actualiza el titulo para nodo con id = 8 </span><br/>
+		    <span> curl -H "Accept: application/json" -X PUT -d "title=Titulo Modificado" http://localhost:8000/wStationMgr/api/8/  </span>
+ 	       </p>
+    		<p> 
+		    <span> Descripcion : Actualiza el titulo para nodo con id = 8 y login </span><br/>
+		    <span> curl -H "Accept: application/json" -X PUT -d "title=Titulo Modificado XXX" -u tester:tester http://localhost:8000/wStationMgr/api/8/  </span>
+	       	</p>
+		<h4> Retrieve </h4>
+		<p> 
+    	 	    <span> Descripcion : Retorna data con id = 5 </span><br/>
+		    <span> curl  -H "Accept: application/json" http://localhost:8000/wStationMgr/api/data/5/  </span> 
+		</p>
+ 	        <p> 
+    	 	    <span> Descripcion : Retorna data con id = 5 em formato xml </span><br/>
+		    <span> curl  -H "Accept: application/xml" http://localhost:8000/wStationMgr/api/data/5/  </span> 
+		    </p>
+		<p> 
+    	 	    <span> Descripcion : Retorna todos los datas </span><br/>
+		    <span> curl -H "Accept: application/json" http://localhost:8000/wStationMgr/api/data/  </span> 
+		    </p>
+	    	<p> 
+    	 	    <span> Descripcion : Retorna data filtrado por nombre </span><br/>
+		    <span >curl  -H "Accept: application/json" http://localhost:8000/wStationMgr/api/data/?name=DN111  </span> 
+		    </p>
+ 	        <p> 
+    	 	    <span> Descripcion : Retorna los data cuyos atributo contienen restriccion = FC3 </span><br/>
+		    <span> curl -H "Accept: application/json" http://localhost:8000/wStationMgr/api/data/?fconstraint=FC3  </span> 
+		</p>
+		<h4> Create </h4>
+		<p> </p>
+	</fieldset>
+
+
+
+{% endblock %}	
+
+
+

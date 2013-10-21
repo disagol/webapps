@@ -1,0 +1,34 @@
+{% load staticfiles %}
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+	
+	<head>	    
+		<link rel="stylesheet" type="text/css" href="{% static 'wStationMgr/styles.css' %}" />
+		<script type="text/javascript" src="{% static 'wStationMgr/js/jquery-1.2.3.js' %}"></script>
+		{% block extra_ref %}{% endblock %}
+		<title>{% block title %}Work Station Manager{% endblock %}</title>
+
+	</head>
+
+	{% block inline_script %}{% endblock %}
+
+	<body>
+		<div id="header">			
+        	{% block header %}
+		<a href="{% static 'wStationMgr:index' %}"><h1> Monitor de nodos </h1></a>
+	        {% endblock %}
+	    </div>
+
+	    <div id="content">
+	        {% block content %}{% endblock %}
+	   </div>
+	   <div id="footer">
+		   {% block footer %}
+	   		<p> This is the footer </p>
+		   {% endblock %}
+	   </div>
+	</body>
+</html>
+
